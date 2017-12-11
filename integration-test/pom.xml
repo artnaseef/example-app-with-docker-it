@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2017 Arthur Naseef
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.artnaseef</groupId>
+        <artifactId>example-app-with-docker-it-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>example-app-with-docker-it-integration-test</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Example Docker IT</name>
+    <description>
+        Integration Test artifact for the example application.
+
+        NOTE: Herein lies the guts of the example.
+    </description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- PROJECT -->
+        <dependency>
+            <groupId>com.artnaseef</groupId>
+            <artifactId>example-app-with-docker-it-app</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18</version>
+                <executions>
+                    <execution>
+                        <id>perform-it</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <!-- https://stackoverflow.com/questions/34526906/spring-applicationcontext-not-cached-for-integration-testing-with-maven -->
+                            <reuseForks>true</reuseForks>
+                            <!-- SEE: http://maven.apache.org/surefire/maven-failsafe-plugin/examples/class-loading.html for useSystemClassLoader -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <systemProperties>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>verify-it</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.22.1</version>
+                <configuration>
+                    <showLogs>true</showLogs>
+                    <images>
+                        <image>
+                            <name>example-app-with-docker-it-image:${project.version}</name>
+                            <build>
+                                <from>openjdk</from>
+                                <assembly>
+                                    <descriptorRef>artifact-with-dependencies</descriptorRef>
+                                    <targetDir>/app</targetDir>
+                                    <!--<inline>-->
+                                        <!--<files>-->
+                                            <!--<file>-->
+                                                <!--<source>../docker-image-root/simple-exec-jar-1.0.0-SNAPSHOT.jar</source>-->
+                                                <!--<outputDirectory>/</outputDirectory>-->
+                                                <!--<destName>simple-exec-jar-1.0.0-SNAPSHOT.jar</destName>-->
+                                            <!--</file>-->
+                                        <!--</files>-->
+                                    <!--</inline>-->
+                                </assembly>
+                                <entryPoint>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <arg>-jar</arg>
+                                        <arg>app/example-app-with-docker-it-app-${version}.jar</arg>
+                                    </exec>
+                                </entryPoint>
+                            </build>
+
+                                <!--  args:Ljava/util/Map;
+ args:Ljava/util/Map;
+ args:Ljava/util/Map;
+ assembly:Lio/fabric8/maven/docker/config/AssemblyConfiguration;
+ assembly:Lio/fabric8/maven/docker/config/AssemblyConfiguration;
+ buildOptions:Ljava/util/Map;
+ buildOptions:Ljava/util/Map;
+ cleanup:Ljava/lang/String;
+ cleanup:Ljava/lang/String;
+ cleanup:Ljava/lang/String;
+ cmd:Lio/fabric8/maven/docker/config/Arguments;
+ cmd:Lio/fabric8/maven/docker/config/Arguments;
+ cmd:Lio/fabric8/maven/docker/config/Arguments;
+ cmd:Lio/fabric8/maven/docker/config/Arguments;
+ command:Ljava/lang/String;
+ command:Ljava/lang/String;
+ command:Ljava/lang/String;
+ compression:Lio/fabric8/maven/docker/config/ArchiveCompression;
+ compression:Lio/fabric8/maven/docker/config/ArchiveCompression;
+ compression:Lio/fabric8/maven/docker/config/ArchiveCompression;
+ dockerArchive:Ljava/lang/String;
+ dockerArchiveFile:Ljava/io/File;
+ dockerFile:Ljava/lang/String;
+ dockerFileDir:Ljava/lang/String;
+ dockerFileFile:Ljava/io/File;
+ dockerFileFile:Ljava/io/File;
+ entryPoint:Lio/fabric8/maven/docker/config/Arguments;
+ entryPoint:Lio/fabric8/maven/docker/config/Arguments;
+ entryPoint:Lio/fabric8/maven/docker/config/Arguments;
+ entryPoint:Lio/fabric8/maven/docker/config/Arguments;
+ env:Ljava/util/Map;
+ env:Ljava/util/Map;
+ filter:Ljava/lang/String;
+ filter:Ljava/lang/String;
+ filter:Ljava/lang/String;
+ from:Ljava/lang/String;
+ from:Ljava/lang/String;
+ from:Ljava/lang/String;
+ fromExt:Ljava/util/Map;
+ fromExt:Ljava/util/Map;
+ healthCheck:Lio/fabric8/maven/docker/config/HealthCheckConfiguration;
+ healthCheck:Lio/fabric8/maven/docker/config/HealthCheckConfiguration;
+ healthCheck:Lio/fabric8/maven/docker/config/HealthCheckConfiguration;
+ healthCheck:Lio/fabric8/maven/docker/config/HealthCheckConfiguration;
+ healthCheck:Lio/fabric8/maven/docker/config/HealthCheckConfiguration;
+ io/fabric8/maven/docker/config/ArchiveCompression.none:Lio/fabric8/maven/docker/config/ArchiveCompression;
+ labels:Ljava/util/Map;
+ labels:Ljava/util/Map;
+ maintainer:Ljava/lang/String;
+ maintainer:Ljava/lang/String;
+ nocache:Z
+ nocache:Z
+ nocache:Z
+ optimise:Z
+ optimise:Z
+ optimise:Z
+ ports:Ljava/util/List;
+ ports:Ljava/util/List;
+ registry:Ljava/lang/String;
+ registry:Ljava/lang/String;
+ runCmds:Ljava/util/List;
+ runCmds:Ljava/util/List;
+ skip:Z
+ skip:Z
+ skip:Z
+ tags:Ljava/util/List;
+ tags:Ljava/util/List;
+ user:Ljava/lang/String;
+ user:Ljava/lang/String;
+ volumes:Ljava/util/List;
+ volumes:Ljava/util/List;
+ workdir:Ljava/lang/String;
+ workdir:Ljava/lang/String;
+-->
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-before-integration-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-after-integration-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

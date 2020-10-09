@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Arthur Naseef
+ * Copyright (c) 2020 Arthur Naseef
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,30 +18,18 @@
  *
  */
 
-package com.artnaseef;
+package com.artnaseef;import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+public class ApplicationTestSteps {
 
-/**
- * Notice this doesn't automate any tests - it simply sleeps for a short time so the user can
- * verify that the docker container builds and runs.
- *
- * Created by art on 12/10/17.
- */
-@RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"json:target/cucumber/test-report.json", "html:target/cucumber/html", "pretty"})
-public class ApplicationIT {
 
-  /**
-   * Verify operation of the Application.
-   */
-  @Test
-  public void testApplication() throws Exception {
-    System.out.println("WAIT 5 SECONDS");
-    Thread.sleep(5000);
-    System.out.println("WAIT COMPLETE");
-  }
+    @When("application runs")
+    public void applicationRuns() {
+
+    }
+
+    @Then("verify it")
+    public void verifyIt() {
+    }
 }
